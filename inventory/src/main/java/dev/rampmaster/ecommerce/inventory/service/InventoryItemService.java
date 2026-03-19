@@ -2,20 +2,21 @@ package dev.rampmaster.ecommerce.inventory.service;
 
 import dev.rampmaster.ecommerce.inventory.model.InventoryItem;
 import dev.rampmaster.ecommerce.inventory.repository.InventoryItemRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class InventoryItemService {
 
     private final InventoryItemRepository repository;
 
-    public InventoryItemService(InventoryItemRepository repository) {
-        this.repository = repository;
-    }
-
+    @CircuitBreaker(name = "inventoryService", fallbackMethod = "fallbackFindAll")
     public List<InventoryItem> findAll() {
         return repository.findAll();
     }
@@ -44,5 +45,8 @@ public class InventoryItemService {
         repository.deleteById(id);
         return true;
     }
-}
 
+    public List<InventoryItem> fallbackFindAll(Throwable t) {
+        return new ArrayList<>();
+    }
+}
