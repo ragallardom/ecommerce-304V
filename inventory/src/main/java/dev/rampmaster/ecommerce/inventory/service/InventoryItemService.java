@@ -25,6 +25,7 @@ public class InventoryItemService {
         return repository.findById(id);
     }
 
+
     public InventoryItem create(InventoryItem entity) {
         entity.setId(null);
         return repository.save(entity);
