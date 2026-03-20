@@ -1,6 +1,8 @@
 package dev.rampmaster.ecommerce.inventory.controller;
 
+import dev.rampmaster.ecommerce.inventory.dto.MovementRequest;
 import dev.rampmaster.ecommerce.inventory.model.InventoryItem;
+import dev.rampmaster.ecommerce.inventory.model.InventoryMovement;
 import dev.rampmaster.ecommerce.inventory.service.InventoryItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +57,18 @@ public class InventoryItemController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/shrinkage")
+    public ResponseEntity<InventoryMovement> registerShrinkage(
+            @PathVariable Long id,
+            @RequestBody MovementRequest request) {
+        return ResponseEntity.ok(service.registerShrinkage(id, request.getQuantity(), request.getReason()));
+    }
+
+    @GetMapping("/{id}/history")
+    public ResponseEntity<List<InventoryMovement>> getHistory(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getHistory(id));
     }
 }
 
